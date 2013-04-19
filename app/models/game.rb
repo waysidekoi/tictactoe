@@ -1,3 +1,5 @@
 class Game < ActiveRecord::Base
-  # Remember to create a migration!
+  belongs_to :creator, :class_name=>"User", :foreign_key=>:user_id
+  belongs_to :opponent, :class_name=>"User", :foreign_key=>:opponent_id
+  belongs_to :winner, :class_name=>"User", :foreign_key=>:winner_id
 end
