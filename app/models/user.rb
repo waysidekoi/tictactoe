@@ -6,4 +6,5 @@ class User < ActiveRecord::Base
   validates_presence_of :email
   validates_uniqueness_of :email
 
+  scope :active_users, where(:active => true)
 end

@@ -1,0 +1,4 @@
+
+<% @games.each do |game|%>
+  <%= erb :_game_card, :locals=>{:game=> game} %>
+<%end%>

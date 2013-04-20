@@ -7,3 +7,21 @@
 th {
   text-align: left;
 }
+
+.user-list {
+  border: 1px solid;
+  position: relative;
+  float: right;
+}
+
+.user-list li {
+
+}
+
+.login-container {
+  width: 400px;
+}
+
+.game_card {
+  border: 1px solid;
+}

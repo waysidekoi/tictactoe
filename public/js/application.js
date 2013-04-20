@@ -4,4 +4,39 @@ $(document).ready(function() {
   // when we try to bind to them
 
   // See: http://docs.jquery.com/Tutorials:Introducing_$(document).ready()
+
+
+
+
+  // make sure to call lobby.render() to show page
+
 });
+
+  // lobby = new Lobby();
+  // lobby.syncGames();
+  // lobby.syncUsers();
+
+function lobbyPage() {
+  $(document).ready(function(){
+
+    console.log("first");
+    lobby = new Lobby();
+    //lobby.render(); 
+    console.log("second");
+    // window.setInterval(
+    //   function(){
+    //     lobby.render(); 
+    //   },5000
+    // );
+
+    // window.setTimeout(
+    //   function(){ 
+    //     lobby.syncUsers(); 
+    //     lobby.syncGames(); 
+    //     lobby.render(); 
+    //   }, 5000);
+
+
+
+  });
+};

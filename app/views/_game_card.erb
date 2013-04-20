@@ -1,0 +1,9 @@
+
+
+<div class="game_card">
+  <h3>Creator: <%= game.creator.email %></h3>
+  <form action="/games/<%=game.id%>/join" method="post">
+    <input name="_method" type="hidden" value="put" />
+    <button class="join">Join!</button>  
+  </form>
+</div>
