@@ -1,3 +1,5 @@
+<h2>Game #1</h2> 
+<!-- Change from 3 to actual id -->
 <div class="container">
   <table class="board">
     <tr>
@@ -19,22 +21,95 @@
 </div>
 
 <script type="text/javascript">
-  $(document).ready(function(){
-    var game = new Game();
-    $('td').on('click', function(){
+$(document).ready(function(){
+  var game = new Game();
+  if(!game.my_turn){
+    listen();
+  }
+
+  $('td').on('click', function(){
+    if(game.my_turn && $(this).text() === ''){
       $(this).text(game.x_or_o);
-      game.update($(this).attr('class'));
-      game.my_turn = !game.my_turn;
-    });
+      game.update_ruby_board_and_js_state($(this).attr('class'));
+      game.my_turn = false;
+      listen();
+    }
   });
+  
 
   function Game(){
-    this.state = ['-','-','-','-','-','-','-','-','-'];
-    this.x_or_o = "O";
-    this.my_turn = true;
+    this.state = '---------';
+    this.x_or_o = (window.location.pathname[window.location.pathname.length-1]==1) ? "X" : "O";
+    this.my_turn = (this.x_or_o == "X") ? true : false;
+    this.game_id = 1;
+    this.over = false;
+    this.win_array = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
   }
-  Game.prototype.update = function(position){
-    this.state[position-1]=this.x_or_o;
-    alert(this.my_turn);
+  function update_js_board_and_state_from_ruby(game, updated_board){
+    game.state = updated_board;
+    //alert("GAME STATE: "+ game.state)
+    
+    for (var i = 1; i <= 9; i++){
+      class_name = '.'+i;
+      if (game.state[i-1] !== '-'){
+        $(class_name).text(game.state[i-1]);
+      }
+    }
+   
   }
+
+  function won(){
+    for(var i = 0; i < 8; i++){
+      var current_test = game.win_array[i]
+      if(game.state[current_test[0]] != '-'){
+        if(game.state[current_test[1]] === game.state[current_test[0]] && game.state[current_test[2]] === game.state[current_test[0]]){
+          $.ajax({
+            alert("Winner!");
+            game.over = true;
+          });
+        }
+      }
+    }
+    return false;
+  }
+
+  function listen(){
+    won();
+    setTimeout(function(){
+      $.ajax({
+        type: "POST",
+        url: '/pull_updates',
+        data: {id: game.game_id},
+        success: function(r){
+          
+          if(r != game.state){
+            update_js_board_and_state_from_ruby(game, r);
+            //alert("returned board: "+r+ "game_state:"+game.state+"turn?:"+game.my_turn);
+            game.my_turn = true;
+          }
+          listen();
+          game.my_turn ? $('body').css('background-color', 'green') : $('body').css('background-color', 'red');
+        }
+    });
+  }, 1000);   
+ }
+ 
+
+
+
+ Game.prototype.update_ruby_board_and_js_state = function(position){
+    game.state = game.state.substr(0,[position-1]) + game.x_or_o + game.state.substr(position);
+    //alert(game.state);
+    game_str = game.state;
+    $.ajax({
+      type: "POST",
+      url: '/update_ruby',
+      data: {state: game_str, id: this.game_id},
+      success: function(r){
+        
+      }
+    });
+  }
+
+});
 </script>
